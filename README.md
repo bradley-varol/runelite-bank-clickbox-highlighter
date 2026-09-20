@@ -4,7 +4,7 @@ A RuneLite plugin for OSRS that highlights the clickboxes of nearby bank access 
 
 **Highlight colour** controls the outline and fill, including transparency. **Highlight deposit boxes** separately controls deposit-only bank fixtures such as Bank deposit boxes and Deposit boxes. **Highlight Group storage** separately controls Group Ironman storage chests, which have an **Open** action. Both optional categories are disabled by default and use the same highlight colour.
 
-The plugin follows game objects and wall objects as they appear and disappear. It scans the scene once the player has loaded, so nearby banks are highlighted after login or when the plugin is enabled. Plain chests without a **Bank** action and unrelated objects with a **Deposit** action are not highlighted. Group storage chests are tracked by their exact name and **Open** action, then shown only when their option is enabled. NPC bankers are not outlined because RuneLite does not expose an NPC clickbox through the object API.
+The plugin follows game objects and wall objects as they appear and disappear. It scans the scene once the player has loaded, so nearby banks are highlighted after login or when the plugin is enabled. Plain chests without a **Bank** action and unrelated objects with a **Deposit** action are not highlighted. Banks whose only **Bank** action comes from a temporary object override may not be detected. Group storage chests are tracked by their exact name and **Open** action, then shown only when their option is enabled. NPC bankers are not outlined because RuneLite does not expose an NPC clickbox through the object API.
 
 ## Build
 

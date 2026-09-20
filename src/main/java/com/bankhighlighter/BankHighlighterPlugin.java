@@ -81,38 +81,21 @@ public class BankHighlighterPlugin extends Plugin
         return bankObjects;
     }
 
-    BankTargetType getActiveTargetType(TileObject object, ObjectComposition definition)
+    // getOpOverride walks the client's pending-spawn deque and is unsafe in spawn callbacks.
+    // Classify from the object definition instead.
+    BankTargetType getActiveTargetType(ObjectComposition definition)
     {
         if (definition.getImpostorIds() != null)
         {
             definition = definition.getImpostor();
         }
-        if (definition == null)
-        {
-            return BankTargetType.NONE;
-        }
-
-        BankTargetType type = classifyDefinition(definition);
-        return type != BankTargetType.NONE ? type
-            : hasBankOverride(object) ? BankTargetType.BANK : BankTargetType.NONE;
+        return definition == null ? BankTargetType.NONE : classifyDefinition(definition);
     }
 
     private BankTargetType classifyDefinition(ObjectComposition definition)
     {
         return targetDefinitions.computeIfAbsent(definition.getId(),
             id -> classify(definition.getName(), definition.getActions()));
-    }
-
-    private static boolean hasBankOverride(TileObject object)
-    {
-        for (int i = 0; i < 5; i++)
-        {
-            if ("Bank".equalsIgnoreCase(object.getOpOverride(i)))
-            {
-                return true;
-            }
-        }
-        return false;
     }
 
     static BankTargetType classify(String name, String[] actions)
@@ -202,8 +185,8 @@ public class BankHighlighterPlugin extends Plugin
 
         int id = object.getId();
         ObjectComposition definition = definitions.computeIfAbsent(id, client::getObjectDefinition);
-        if (definition != null && (bankCandidates.computeIfAbsent(id,
-            ignored -> isBankCandidate(definition)) || hasBankOverride(object)))
+        if (definition != null && bankCandidates.computeIfAbsent(id,
+            ignored -> isBankCandidate(definition)))
         {
             bankObjects.put(object, definition);
         }

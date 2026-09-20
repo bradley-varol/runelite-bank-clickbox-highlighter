@@ -66,7 +66,7 @@ public class BankHighlighterOverlay extends Overlay
             {
                 continue;
             }
-            BankTargetType type = plugin.getActiveTargetType(object, entry.getValue());
+            BankTargetType type = plugin.getActiveTargetType(entry.getValue());
             if (type == BankTargetType.NONE
                 || (type == BankTargetType.DEPOSIT_BOX && !highlightDepositBoxes)
                 || (type == BankTargetType.GROUP_STORAGE && !highlightGroupStorage))
