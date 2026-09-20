@@ -13,13 +13,9 @@ import net.runelite.api.ObjectComposition;
 import net.runelite.api.Tile;
 import net.runelite.api.TileObject;
 import net.runelite.api.WorldView;
-import net.runelite.api.events.DecorativeObjectDespawned;
-import net.runelite.api.events.DecorativeObjectSpawned;
 import net.runelite.api.events.GameObjectDespawned;
 import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
-import net.runelite.api.events.GroundObjectDespawned;
-import net.runelite.api.events.GroundObjectSpawned;
 import net.runelite.api.events.WallObjectDespawned;
 import net.runelite.api.events.WallObjectSpawned;
 import net.runelite.client.callback.ClientThread;
@@ -225,8 +221,6 @@ public class BankHighlighterPlugin extends Plugin
             }
         }
         track(tile.getWallObject());
-        track(tile.getGroundObject());
-        track(tile.getDecorativeObject());
     }
 
     private void clearScene()
@@ -291,8 +285,4 @@ public class BankHighlighterPlugin extends Plugin
     @Subscribe public void onGameObjectDespawned(GameObjectDespawned event) { bankObjects.remove(event.getGameObject()); }
     @Subscribe public void onWallObjectSpawned(WallObjectSpawned event) { track(event.getWallObject()); }
     @Subscribe public void onWallObjectDespawned(WallObjectDespawned event) { bankObjects.remove(event.getWallObject()); }
-    @Subscribe public void onGroundObjectSpawned(GroundObjectSpawned event) { track(event.getGroundObject()); }
-    @Subscribe public void onGroundObjectDespawned(GroundObjectDespawned event) { bankObjects.remove(event.getGroundObject()); }
-    @Subscribe public void onDecorativeObjectSpawned(DecorativeObjectSpawned event) { track(event.getDecorativeObject()); }
-    @Subscribe public void onDecorativeObjectDespawned(DecorativeObjectDespawned event) { bankObjects.remove(event.getDecorativeObject()); }
 }
