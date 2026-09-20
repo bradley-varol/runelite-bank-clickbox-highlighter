@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    maven {
+        url = 'https://repo.runelite.net'
+        content { includeGroupByRegex('net\\.runelite.*') }
+    }
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly group: 'net.runelite', name: 'client', version: 'latest.release'
+    testImplementation group: 'net.runelite', name: 'client', version: 'latest.release'
+    testImplementation group: 'net.runelite', name: 'jshell', version: 'latest.release'
+    testImplementation 'junit:junit:4.13.2'
+}
+
+group = 'com.bankhighlighter'
+version = '1.0.5'
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release.set(11)
+}
+
+tasks.register('run', JavaExec) {
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.bankhighlighter.BankHighlighterPluginTest'
+    jvmArgs '-ea'
+    if (System.getProperty('os.name').toLowerCase().contains('mac')) {
+        jvmArgs '--add-exports=java.desktop/com.apple.eawt=ALL-UNNAMED'
+    }
+    args '--developer-mode', '--debug'
+}
