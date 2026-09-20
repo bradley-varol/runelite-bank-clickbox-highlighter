@@ -22,6 +22,7 @@ import net.runelite.api.events.GroundObjectDespawned;
 import net.runelite.api.events.GroundObjectSpawned;
 import net.runelite.api.events.WallObjectDespawned;
 import net.runelite.api.events.WallObjectSpawned;
+import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
@@ -36,6 +37,7 @@ import net.runelite.client.ui.overlay.OverlayManager;
 public class BankHighlighterPlugin extends Plugin
 {
     @Inject private Client client;
+    @Inject private ClientThread clientThread;
     @Inject private OverlayManager overlayManager;
     @Inject private BankHighlighterConfig config;
 
@@ -44,7 +46,7 @@ public class BankHighlighterPlugin extends Plugin
     private final Map<Integer, ObjectComposition> definitions = new HashMap<>();
     private final Map<Integer, BankTargetType> targetDefinitions = new HashMap<>();
     private final Map<Integer, Boolean> bankCandidates = new HashMap<>();
-    private BankHighlighterOverlay overlay;
+    private volatile BankHighlighterOverlay overlay;
 
     @Provides
     BankHighlighterConfig provideConfig(ConfigManager configManager)
@@ -55,12 +57,16 @@ public class BankHighlighterPlugin extends Plugin
     @Override
     protected void startUp()
     {
-        overlay = new BankHighlighterOverlay(this, config, client);
-        overlayManager.add(overlay);
-        if (client.getGameState() == GameState.LOGGED_IN)
+        BankHighlighterOverlay activeOverlay = new BankHighlighterOverlay(this, config, client);
+        overlay = activeOverlay;
+        overlayManager.add(activeOverlay);
+        clientThread.invokeLater(() ->
         {
-            scanScene();
-        }
+            if (overlay == activeOverlay && client.getGameState() == GameState.LOGGED_IN)
+            {
+                scanScene();
+            }
+        });
     }
 
     @Override
