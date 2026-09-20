@@ -35,7 +35,7 @@ public class BankHighlighterOverlay extends Overlay
     @Override
     public Dimension render(Graphics2D graphics)
     {
-        if (client.getGameState() != GameState.LOGGED_IN)
+        if (client.getGameState() != GameState.LOGGED_IN || client.getLocalPlayer() == null)
         {
             return null;
         }

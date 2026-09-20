@@ -16,6 +16,7 @@ import net.runelite.api.WorldView;
 import net.runelite.api.events.GameObjectDespawned;
 import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameStateChanged;
+import net.runelite.api.events.GameTick;
 import net.runelite.api.events.WallObjectDespawned;
 import net.runelite.api.events.WallObjectSpawned;
 import net.runelite.client.callback.ClientThread;
@@ -43,6 +44,7 @@ public class BankHighlighterPlugin extends Plugin
     private final Map<Integer, BankTargetType> targetDefinitions = new HashMap<>();
     private final Map<Integer, Boolean> bankCandidates = new HashMap<>();
     private volatile BankHighlighterOverlay overlay;
+    private volatile boolean scanPending;
 
     @Provides
     BankHighlighterConfig provideConfig(ConfigManager configManager)
@@ -58,9 +60,9 @@ public class BankHighlighterPlugin extends Plugin
         overlayManager.add(activeOverlay);
         clientThread.invokeLater(() ->
         {
-            if (overlay == activeOverlay && client.getGameState() == GameState.LOGGED_IN)
+            if (overlay == activeOverlay)
             {
-                scanScene();
+                scanPending = true;
             }
         });
     }
@@ -70,6 +72,7 @@ public class BankHighlighterPlugin extends Plugin
     {
         overlayManager.remove(overlay);
         overlay = null;
+        scanPending = false;
         clearScene();
     }
 
@@ -206,6 +209,16 @@ public class BankHighlighterPlugin extends Plugin
         }
     }
 
+    private void trackSpawned(TileObject object)
+    {
+        if (client.getGameState() != GameState.LOGGED_IN || client.getLocalPlayer() == null)
+        {
+            scanPending = true;
+            return;
+        }
+        track(object);
+    }
+
     private void scanTile(Tile tile)
     {
         if (tile == null)
@@ -273,16 +286,27 @@ public class BankHighlighterPlugin extends Plugin
     {
         if (event.getGameState() == GameState.LOGGED_IN)
         {
-            scanScene();
+            scanPending = true;
         }
         else
         {
+            scanPending = false;
             clearScene();
         }
     }
 
-    @Subscribe public void onGameObjectSpawned(GameObjectSpawned event) { track(event.getGameObject()); }
+    @Subscribe
+    public void onGameTick(GameTick event)
+    {
+        if (scanPending && client.getGameState() == GameState.LOGGED_IN && client.getLocalPlayer() != null)
+        {
+            scanPending = false;
+            scanScene();
+        }
+    }
+
+    @Subscribe public void onGameObjectSpawned(GameObjectSpawned event) { trackSpawned(event.getGameObject()); }
     @Subscribe public void onGameObjectDespawned(GameObjectDespawned event) { bankObjects.remove(event.getGameObject()); }
-    @Subscribe public void onWallObjectSpawned(WallObjectSpawned event) { track(event.getWallObject()); }
+    @Subscribe public void onWallObjectSpawned(WallObjectSpawned event) { trackSpawned(event.getWallObject()); }
     @Subscribe public void onWallObjectDespawned(WallObjectDespawned event) { bankObjects.remove(event.getWallObject()); }
 }
