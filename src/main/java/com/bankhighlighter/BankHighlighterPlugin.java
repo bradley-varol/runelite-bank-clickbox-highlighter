@@ -29,7 +29,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 
 @PluginDescriptor(
-    name = "Bank Highlighter",
+    name = "Bank Clickbox Highlighter",
     description = "Highlights bank clickboxes, with options for deposit boxes and Group storage",
     tags = {"bank", "booth", "chest", "highlight"}
 )

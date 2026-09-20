@@ -1,4 +1,4 @@
-# Bank Highlighter
+# Bank Clickbox Highlighter
 
 A RuneLite plugin for OSRS that highlights the clickboxes of nearby bank access objects. It detects objects with a **Bank** action, including bank booths, bank chests, and the Bank Crab at The Pandemonium. It also recognizes named bank fixtures with a **Use** action.
 
@@ -12,6 +12,6 @@ Requires Java 11+. Run `./gradlew build` in this directory. The Gradle wrapper d
 
 ## Test locally
 
-Run `./gradlew run` to start a separate RuneLite development client with this plugin loaded. Open the plugin list and enable **Bank Highlighter**. Visit a bank booth and a bank chest, then change **Highlight colour**, **Highlight deposit boxes**, and **Highlight Group storage** in the plugin settings to verify the overlay updates. The outline follows the clickable shape of each bank object rather than its tile.
+Run `./gradlew run` to start a separate RuneLite development client with this plugin loaded. Open the plugin list and enable **Bank Clickbox Highlighter**. Visit a bank booth and a bank chest, then change **Highlight colour**, **Highlight deposit boxes**, and **Highlight Group storage** in the plugin settings to verify the overlay updates. The outline follows the clickable shape of each bank object rather than its tile.
 
 If you use a Jagex Account and the development client cannot log in, follow [RuneLite's Jagex Account development guide](https://github.com/runelite/runelite/wiki/Using-Jagex-Accounts). Keep the credentials file described there private.
